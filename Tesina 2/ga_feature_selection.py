@@ -634,11 +634,13 @@ if __name__ == "__main__":
                           save_path=f"{OUT_DIR}/s1_fitness_boxplot.png")
 
     # Feature frequency per scenario 1 (pop=100)
-    if 100 in res_pop:
-        plot_feature_frequency(res_pop[100]['logger'].feature_counts, feature_names,
-                               title="Scenario 1 (pop=100) – Frequenza Selezione Feature",
-                               save_path=f"{OUT_DIR}/s1_feature_freq.png")
-
+    for ps, res in res_pop.items():
+        plot_feature_frequency(
+            res['logger'].feature_counts, 
+            feature_names,
+            title=f"Scenario 1 (pop={ps}) – Frequenza Selezione Feature",
+            save_path=f"{OUT_DIR}/s1_feature_freq_pop_{ps}.png"
+        )
     s1_summary = save_summary_table(res_pop, "Population Size",
                                     f"{OUT_DIR}/s1_summary.csv")
     print("\nScenario 1 – Riepilogo:")
@@ -660,12 +662,15 @@ if __name__ == "__main__":
                           title="Scenario 2 – Distribuzione Fitness per Operatori Genetici",
                           save_path=f"{OUT_DIR}/s2_fitness_boxplot.png")
 
-    # Feature frequency: configurazione di riferimento (cr=0.8, mr=0.1, tournament k=3)
-    ref_key = 'cr=0.8'
-    if ref_key in res_ops:
-        plot_feature_frequency(res_ops[ref_key]['logger'].feature_counts, feature_names,
-                               title="Scenario 2 (ref: cr=0.8) – Frequenza Selezione Feature",
-                               save_path=f"{OUT_DIR}/s2_feature_freq.png")
+    for label, res in res_ops.items():
+        # Rendiamo il label adatto a un nome file (es. cr=0.8 -> cr_08)
+        clean_label = label.replace("=", "_").replace(".", "")
+        plot_feature_frequency(
+            res['logger'].feature_counts, 
+            feature_names,
+            title=f"Scenario 2 ({label}) – Frequenza Selezione Feature",
+            save_path=f"{OUT_DIR}/s2_feature_freq_{clean_label}.png"
+        )
 
     s2_summary = save_summary_table(res_ops, "Genetic Operators",
                                     f"{OUT_DIR}/s2_summary.csv")
@@ -687,7 +692,15 @@ if __name__ == "__main__":
     plot_fitness_boxplots(res_stop,
                           title="Scenario 3 – Distribuzione Fitness per Criteri di Stop",
                           save_path=f"{OUT_DIR}/s3_fitness_boxplot.png")
-  
+    for label, res in res_stop.items():
+        clean_label = label.replace("=", "_").replace(".", "").replace(":", "_")
+        plot_feature_frequency(
+            res['logger'].feature_counts, 
+            feature_names,
+            title=f"Scenario 3 ({label}) – Frequenza Selezione Feature",
+            save_path=f"{OUT_DIR}/s3_feature_freq_{clean_label}.png"
+        )
+        
     s3_summary = save_summary_table(res_stop, "Stopping Criteria",
                                     f"{OUT_DIR}/s3_summary.csv")
     print("\nScenario 3 – Riepilogo:")
