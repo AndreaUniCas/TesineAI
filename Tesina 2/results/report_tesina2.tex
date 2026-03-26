@@ -1,0 +1,321 @@
+\documentclass[11pt,a4paper]{article}
+
+% ── Pacchetti ──────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\setlength{\headheight}{13.6pt}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{float}
+
+
+% ── Colori ─────────────────────────────────────────────────────────────────────
+\definecolor{marsred}{RGB}{180,60,40}
+\definecolor{codegray}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{110,110,110}
+\definecolor{codestring}{RGB}{160,30,30}
+\definecolor{codekeyword}{RGB}{30,80,160}
+
+% ── Stile codice ───────────────────────────────────────────────────────────────
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  commentstyle=\color{codecomment}\itshape,
+  keywordstyle=\color{codekeyword}\bfseries,
+  stringstyle=\color{codestring},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{gray!40},
+  tabsize=4,
+  language=Python,
+  showstringspaces=false,
+  captionpos=b
+}
+
+% ── Intestazione ───────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{marsred}{\textbf{Analisi Algoritmo Genetico come Feature Selection 
+su Dataset DARWIN}}}
+\rhead{\textit{Tesina 2}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Titolo ─────────────────────────────────────────────────────────────────────
+\title{
+  \vspace{-1cm}
+  {\Large \textbf{Analisi Algoritmo Genetico come Feature Selection 
+su Dataset DARWIN}}
+}
+\author{Baris Giorgio \and Fionda Andrea \and Massaro Federico \and Petrilli Davide \\ [0.5cm]
+  \small Università degli Studi di Cassino e del Lazio Meridionale\\
+  \small Corso di Laurea Magistrale LM-32
+}
+\date{A.A.\ 2025/2026}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+\tableofcontents
+\vspace{0.4cm}
+\rule{\linewidth}{0.3pt}
+\bigskip
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Introduzione e specifiche del problema}
+\subsection{Introduzione}
+L'obiettivo di questa tesina è analizzare l'efficacia di un algoritmo genetico come metodo di feature selection su un dataset reale, in questo caso il dataset DARWIN. La feature selection è una fase cruciale nel processo di costruzione di modelli predittivi, poiché consente di identificare le caratteristiche più rilevanti per la previsione, migliorando così le prestazioni del modello e riducendo il rischio di overfitting.
+Gli algoritmi genetici sono ispirati ai processi di evoluzione naturale e sono ampiamente utilizzati per risolvere problemi di ottimizzazione complessi. In questo contesto, utilizzeremo un algoritmo genetico per selezionare un sottoinsieme di caratteristiche dal dataset DARWIN, al fine di migliorare le prestazioni di un modello di classificazione.
+\subsection{Contesto e specifiche del problema}
+Un team di ricerca deve analizzare l'impatto dei diversi parametri degli
+Algoritmi Genetici GA sulla loro performance e convergenza utilizzando il
+dataset DARWIN. Questo dataset contiene caratteristiche di scrittura a mano
+per lo studio dell'Alzheimer, offrendo un contesto reale e significativo per
+l'analisi degli algoritmi genetici.
+\subsubsection{Dataset DARWIN}
+Il dataset DARWIN utilizzato in questa tesina è composto da 174 campioni, ciascuno con diverse features che rappresentano vari aspetti della scrittura a mano.
+La struttura del dataset include:
+\begin{itemize}
+  \item \textbf{Features di scrittura a mano:} In questa categoria rientrano le metriche che descrivono l'atto della scrittura come evento discreto e la sua intensità di contatto.
+  \item \textbf{Features di cinematica:} In questa categoria rientrano le metriche che descrivono la dinamica del movimento, distinguendo tra quando la penna scrive e quando si sposta in aria (hovering).
+  \item \textbf{Pressione della penna:} In questa categoria rientrano le metriche che indicano la forza fisica esercitata dal soggetto sulla superficie durante la scrittura.
+  \item \textbf{Parametri geometrici:} In questa categoria rientrano le metriche che descrivono l'ingombro spaziale e le proporzioni del testo o del disegno prodotto.
+  \item \textbf{Caratteristiche temporali:} In questa categoria rientrano le metriche che analizzano la gestione del tempo e le pause, fattori cruciali per identificare rallentamenti nei processi motori e cognitivi.
+\end{itemize}
+e presenta le seguenti complessità:
+\begin{itemize}
+  \item \textbf{Multiple feature categories:} Il dataset non contiene un unico tipo di misura, ma riflette diverse dimensioni del comportamento umano (motorio, cognitivo e fisico).
+  Un Algoritmo Genetico deve selezionare un ``mix'' equilibrato di queste categorie perché, una selezione sbilanciata solo su parametri temporali, potrebbe ignorare micro-tremori cinematici fondamentali per la diagnosi.
+  Questo implica che la funzione di fitness deve essere in grado di valutare l'apporto informativo di variabili con unità di misura e significati fisici completamente diversi tra loro.
+  \item \textbf{Dati numerici continui:} A differenza di dataset categorici (es. ``Sì/No'', ``Rosso/Verde''), le feature di DARWIN sono numeri reali (es. \texttt{mean\_speed} può essere $125.45$, \texttt{pressure\_mean} può essere $0.00045$).
+  Alcune variabili hanno range enormi (migliaia di unità per il tempo), mentre altre hanno range infinitesimali (decimali per l'accelerazione o il jerk). Senza un adeguato pre-processing (come la normalizzazione), le feature con valori numerici più grandi potrebbero ``schiacciare'' quelle con valori piccoli, traendo in inganno l'algoritmo.  
+  Per il GA, questo significa che il ``segnale'' utile è nascosto in una precisione numerica elevata, rendendo difficile distinguere il rumore statistico dalla reale rilevanza clinica.
+ \item \textbf{Correlazione complessa tra le features:} Le features del dataset non sono indipendenti l'una dall'altra. Questo indica l'alta possibilità di ridondanza:
+  Se \texttt{``total\_time''} è alto, è molto probabile che anche \texttt{``air\_time''} o \texttt{``paper\_time''} siano alti. Se il GA seleziona tutte e tre queste features sta creando ridondanza nella selezione delle features.
+  Selezionare feature ridondanti aumenta la complessità del modello senza aggiungere potere predittivo. Il GA affronta questo problema attraverso una funzione di fitness multi-obiettivo che penalizza la ridondanza interna.
+\end{itemize}
+
+\subsection{Obiettivi}
+L'obiettivo di questa tesina è quello di implementare un algoritmo genetico per la feature selection sul dataset DARWIN e analizzare l'impatto dei diversi parametri dell'algoritmo. In particolare, ci concentreremo su:
+\begin{itemize}
+  \item \textbf{Convergenza dell'algortimo}
+  \item \textbf{Stabilità della soluzione finale}
+  \item \textbf{Velocità di esecuzione}
+  \item \textbf{Robustezza della selezione}
+\end{itemize}
+tenendo conto dei seguenti vincoli imposti: 
+\begin{itemize}
+  \item \textbf{Utilizzare stesso seed per avere confronti equi}
+  \item \textbf{Effettuare minimo 30 run per ogni configurazione}
+  \item \textbf{Rispettare un tempo massimo di esecuzione per ogni run}
+  \item \textbf{Gestire appropiatamente i dati mancanti o anomali}
+\end{itemize}
+Per raggiungere questi obiettivi, implementeremo un algoritmo genetico che include:
+\begin{itemize}
+  \item \textbf{Codifica binaria per la seleizione delle features}
+  \item \textbf{Funzione di fitness basata su correlation analysis}
+  \item \textbf{Operatori genetici modulari}
+\end{itemize}
+e una funzione di logging dettagliata per monitorare l'andamento dell'algoritmo e facilitare l'analisi dei risultati, che ci restituisce le seguenti informazioni:
+\begin{itemize}
+  \item \textbf{Fitness per generazione}
+  \item \textbf{Feature selezionate}
+  \item \textbf{Diversità della popolazione}
+  \item \textbf{Tempo di esecuzione per generazione}
+\end{itemize}
+Queste implementazioni verranno valutate su tre scenari differenti:
+\begin{itemize}
+  \item \textbf{Scenario Dimensione Popolazione} 
+  \item \textbf{Scenario Operatori Genetici} 
+  \item \textbf{Scenario Criterio di stop} 
+\end{itemize}
+che verranno descritti più dettagliatamente nella sezione dedicata all'analisi dei risultati per ogni scenario. L'analisi dei risultati ci permetterà di identificare le configurazioni ottimali per l'algoritmo genetico in questo contesto specifico e di trarre conclusioni sulle migliori pratiche per la feature selection su dataset complessi come DARWIN.
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Implementazioni}
+In questa sezione descriveremo le implementazioni effettuate per lo svolgimento della tesina, evidenziando le scelte progettuali e i dettagli tecnici.
+\subsection{Algoritmo genetico}
+L'algoritmo genetico implementato per questa tesina segue la struttura classica degli algoritmi evolutivi, con alcune personalizzazioni specifiche per il problema di feature selection sul dataset DARWIN. 
+Di seguito sono descritti i principali componenti dell'algoritmo (classe "GeneticAlgorithm"):
+\begin{itemize}
+  \item \textbf{\_\_init\_\_:} Inizializza i parametri dell'algoritmo, come la dimensione della popolazione, il tasso di crossover, il tasso di mutazione e il numero massimo di generazioni.
+  \item \textbf{inizialize\_population:} Genera una popolazione iniziale casuale di soluzioni, dove ogni soluzione è rappresentata da un vettore binario che indica quali features sono selezionate. L'uso di ``np.random.seed'' assicura che la popolazione iniziale sia identica in ogni esecuzione del test.
+  \item \textbf{evaluate\_popolation:} Il metodo evaluate\_population esegue la fase di assegnazione della fitness. Attraverso un'iterazione sulla popolazione, viene richiamata la funzione fitness\_correlation\_based per misurare la qualità di ogni set di feature selezionato. Questo punteggio guiderà le successive fasi di selezione e riproduzione dell'algoritmo.
+  \item \textbf{calculate\_population\_diversity:} Il metodo calculate\_population\_diversity quantifica la variabilità genetica del sistema. Attraverso il calcolo della varianza media dei bit componenti i cromosomi, l'algoritmo monitora il livello di esplorazione dello spazio di ricerca. Tale metrica è fondamentale per diagnosticare fenomeni di saturazione o di eccessiva omogeneità della popolazione.
+  \item \textbf{run:} Il metodo run implementa il ciclo principale dell'algoritmo genetico. Attraverso l'integrazione di elitismo, operatori di crossover e mutazione, il sistema evolve la popolazione verso una selezione ottimale di feature. Il processo include un meccanismo di early stopping basato sulla convergenza stocastica, garantendo un equilibrio tra efficacia della ricerca e tempo computazionale.
+\end{itemize}
+\subsection{Funzione di fitness}
+La funzione di fitness implementata si basa sul framework CFS (Correlation-based Feature Selection). Il punteggio assegnato a ogni individuo non dipende solo dalla capacità predittiva delle singole variabili ($\overline{r_{cf}}$), ma penalizza attivamente la ridondanza interna ($\overline{r_{ff}}$).Matematicamente, il numeratore premia l'associazione con il target, mentre il denominatore agisce come fattore di penalità per la collinearità tra le feature selezionate. Per ottimizzare le prestazioni computazionali, le matrici di correlazione vengono pre-calcolate e interrogate tramite indicizzazione booleana durante l'evoluzione del GA.
+La formula utilizzata è la seguente:
+\begin{equation}
+\text{Fitness} = \frac{k \cdot \overline{r_{cf}}}{\sqrt{k + k(k-1) \cdot \overline{r_{ff}}}}
+\end{equation}
+dove:
+\begin{itemize}
+  \item $k$ è il numero di feature selezionate
+  \item $\overline{r_{cf}}$ è la media delle correlazioni tra le feature selezionate e la variabile target
+  \item $\overline{r_{ff}}$ è la media delle correlazioni tra le feature selezionate
+\end{itemize}
+Il codice è composto da 3 funzioni principali:
+\begin{itemize}
+  \item \textbf{\texttt{\_point\_bisrial\_}:} Misura la relazione tra una variabile continua (feature) e una variabile binaria (target), utilizzando \texttt{\_corr\_cache} per non ricalcolare mai la stessa correlazione più di una volta.
+  \item \textbf{\texttt{fitness\_correlation\_based}:}  Riceve l'individuo (il set di feature attive) e le matrici pre-calcolate. Estrae solo le correlazioni relative alle feature "attive" nel cromosoma e calcola la media triangolare superiore della matrice di correlazione per ottenere $\overline{r_{ff}}$ senza duplicati. Applica la formula di Hall per restituire il valore di merito come punteggio di fitness.
+  \item \textbf{\texttt{precompute\_correlations}:} Calcola le matrici di correlazione ($r_{cf}$ e $r_{ff}$) una sola volta prima dell'avvio del GA. In questo modo evita migliaia di calcoli ridondanti durante l'evoluzione, velocizzando drasticamente l'esecuzione.
+\end{itemize}
+\subsection{Logger}
+La funzione di logging implementata è progettata per monitorare in modo dettagliato l'andamento dell'algoritmo genetico durante le sue iterazioni. Il logger raccoglie e memorizza informazioni chiave che permettono di analizzare la performance e il comportamento dell'algoritmo nel tempo. La classe ``ExperimentLogger'' include i seguenti metodi:
+\begin{itemize}
+  \item \textbf{\_\_init\_\_:} Inizializza le strutture dati interne:
+         \begin{itemize}
+            \item \texttt{self.runs:} Una lista destinata a contenere i record dettagliati di ogni singola esecuzione.
+            \item \texttt{self.feature\_counts:} Un dizionario (hash map) utilizzato per tracciare la frequenza di selezione delle feature. In un contesto di feature selection, questo permette di identificare quali variabili sono ritenute più informative dall'algoritmo attraverso diverse inizializzazioni.
+        \end{itemize}
+  \item \textbf{log\_run:} viene invocato al termine di ogni esecuzione completa dell'algoritmo genetico per registrarne i risultati globali e la configurazione utilizzata. Esso riceve come input un identificativo univoco della run e un set di dati che include le prestazioni dell'individuo migliore, il tempo di calcolo totale e l'andamento di fitness e diversità lungo tutte le generazioni. Queste informazioni, insieme alle feature selezionate dal modello d'élite, vengono memorizzate nelle strutture dati del logger per consentire un'analisi statistica e comparativa della stabilità e della convergenza dell'intero esperimento. 
+  \item \textbf{summary:} Al termine dell'esecuzione dell'algoritmo, questo metodo consente di salvare i log raccolti in un formato facilmente analizzabile (nel nostro caso in .CSV).
+\end{itemize}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Analisi dei risultati}
+In questa sezione analizzeremo i risultati ottenuti dalle diverse configurazioni dell'algoritmo genetico implementato, focalizzandoci sui tre scenari principali: dimensione della popolazione, operatori genetici e criteri di stop. Per ogni scenario, presenteremo i risultati in termini di convergenza, stabilità, velocità di esecuzione e robustezza della selezione.
+Ogni scenario è stato testato con un numero minimo di 30 run per garantire la significatività statistica dei risultati, utilizzando lo stesso seed per tutte le esecuzioni al fine di avere confronti equi. Inoltre, è stato imposto un tempo massimo di esecuzione per ogni run per evitare tempi eccessivi e garantire una gestione efficiente delle risorse computazionali.
+Tutti e 3 gli scenari vengono eseguiti utilizzando una funzione ausiliaria: 
+\begin{itemize}
+  \item \textbf{run\_config:} agisce come motore esecutivo per le singole configurazioni. Essa automatizza l'esecuzione di 30 run indipendenti per ogni set di parametri, istanziando il logger e gestendo la generazione dei seed casuali per garantire la riproducibilità. Al termine delle iterazioni, la funzione aggrega i dati grezzi calcolando statistiche descrittive fondamentali, quali media e deviazione standard della fitness, del tempo di esecuzione e del numero di feature selezionate, restituendo inoltre le curve di convergenza necessarie per l'analisi del comportamento dinamico dell'algoritmo.
+\end{itemize}
+\subsection{Scenario Dimensione Popolazione}
+  Lo scenario analizzato è il seguente:
+\begin{itemize}
+  \item \textbf{Dimensione della popolazione:} 20, 50, 100, 200, 500
+  \item \textbf{Crossover:} 0.8
+  \item \textbf{Mutazione:} 0.1
+\end{itemize}
+L'esperimento è stato eseguito con la funzione \texttt{run\_experiment\_population\_size} che permette di testare diverse dimensioni della popolazione, e i risultati sono stati raccolti e analizzati per valutare l'impatto della dimensione della popolazione sulla convergenza, stabilità, velocità di esecuzione e robustezza della selezione.
+\subsubsection{Risultati ottenuti}
+Di seguito i risultati ottenuti per ogni dimensione della popolazione:
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s1_convergence.png} 
+    \caption{Convergenza per lo scenario dimensione della popolazione}
+\end{figure}
+Osservando le curve di convergenza, si nota come popolazioni più ampie (200 e 500 individui) presentino una fitness iniziale sensibilmente più elevata grazie alla maggiore diversità genetica presente nella prima generazione. 
+Queste configurazioni, inoltre, mostrano una varianza ridotta (rappresentata dalle bande ombreggiate), a conferma di una ricerca più robusta e meno influenzata dalla stocasticità dell'inizializzazione. Al contrario, la popolazione da 20 individui mostra una convergenza verso valori di fitness inferiori, segno di una prematura perdita di diversità.
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s1_exec_time.png} 
+    \caption{Tempo di esecuzione per lo scenario dimensione della popolazione}
+\end{figure}
+Il grafico dei tempi di esecuzione mostra una scalabilità quasi lineare del costo computazionale rispetto alla dimensione della popolazione:  
+la run con 20 individui termina in meno di un secondo, la configurazione a 500 richiede oltre 25 secondi.
+Considerando che il tempo di esecuzione è un fattore critico in contesti reali, è importante bilanciare la dimensione della popolazione con le risorse computazionali disponibili. Tuttavia, i miglioramenti significativi in termini di fitness e stabilità ottenuti con popolazioni più ampie giustificano l'investimento di tempo aggiuntivo, soprattutto in scenari complessi come quello del dataset DARWIN.
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s1_feature_freq_pop_20.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario dimensione della popolazione-20 individui}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s1_feature_freq_pop_50.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario dimensione della popolazione-50 individui}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s1_feature_freq_pop_100.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario dimensione della popolazione-100 individui}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s1_feature_freq_pop_200.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario dimensione della popolazione-200 individui}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s1_feature_freq_pop_500.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario dimensione della popolazione-500 individui}
+\end{figure}
+Analizzando la frequenza di selezione delle feature, si osserva che con l'aumentare della dimensione della popolazione, il GA tende a selezionare un set più diversificato di feature.
+Nella configurazione a 20 individui, alcune feature vengono selezionate con frequenza molto alta, indicando una possibile dipendenza da un piccolo numero di variabili. Al contrario, con 500 individui, la selezione è più distribuita tra le feature, suggerendo che il GA è in grado di esplorare meglio lo spazio delle soluzioni e identificare un set di feature più equilibrato e informativo.
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s1_fitness_boxplot.png} 
+    \caption{Fitness boxplot per lo scenario dimensione della popolazione}
+\end{figure}
+Analizzando la stabilità della soluzione, il boxplot della fitness finale conferma che all'aumentare della dimensione della popolazione non solo migliora il valore medio della fitness, ma si riduce drasticamente la dispersione dei risultati tra le 30 run. 
+La configurazione a 500 individui presenta la distribuzione più compatta e i valori massimi di fitness più elevati, indicando che una popolazione numerosa è essenziale per navigare efficacemente le complesse correlazioni del dataset DARWIN senza cadere in ottimi locali.
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{best_s1.png} 
+    \caption{Riepilogo dei risultati per lo scenario dimensione della popolazione}
+\end{figure}
+\subsection{Scenario operatori genetici}
+\subsubsection{Risultati ottenuti}
+Di seguito i risultati ottenuti per le varie configurazioni di operatori genetici:
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_convergence.png} 
+    \caption{Convergenza per lo scenario operatori genetici}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_exec_time.png} 
+    \caption{Tempo di esecuzione per lo scenario operatori genetici}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_fitness_boxplot.png} 
+    \caption{Fitness boxplot per lo scenario operatori genetici}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{best_s2.png} 
+    \caption{Riepilogo dei risultati per lo scenario operatori genetici}
+\end{figure}
+
+\subsection{Scenario criteri di stop}
+\subsubsection{Risultati ottenuti}
+Di seguito i risultati ottenuti per le varie configurazioni di criteri di stop:
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_convergence.png} 
+    \caption{Convergenza per lo scenario criteri di stop}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_exec_time.png} 
+    \caption{Tempo di esecuzione per lo scenario criteri di stop}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_fitness_boxplot.png} 
+    \caption{Fitness boxplot per lo scenario criteri di stop}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{best_s3.png} 
+    \caption{Riepilogo dei risultati per lo scenario criteri di stop}
+\end{figure}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\end{document}
