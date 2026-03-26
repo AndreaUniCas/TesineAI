@@ -208,6 +208,7 @@ Tutti e 3 gli scenari vengono eseguiti utilizzando una funzione ausiliaria:
   \item \textbf{Mutazione:} 0.1
 \end{itemize}
 L'esperimento è stato eseguito con la funzione \texttt{run\_experiment\_population\_size} che permette di testare diverse dimensioni della popolazione, e i risultati sono stati raccolti e analizzati per valutare l'impatto della dimensione della popolazione sulla convergenza, stabilità, velocità di esecuzione e robustezza della selezione.
+
 \subsubsection{Risultati ottenuti}
 Di seguito i risultati ottenuti per ogni dimensione della popolazione:
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
@@ -264,9 +265,16 @@ La configurazione a 500 individui presenta la distribuzione più compatta e i va
     \includegraphics[width=0.8\textwidth]{best_s1.png} 
     \caption{Riepilogo dei risultati per lo scenario dimensione della popolazione}
 \end{figure}
+
 \subsection{Scenario operatori genetici}
+Lo scenario analizzato è il seguente:
+\begin{itemize}
+  \item \textbf{Operatori genetici:} Crossover (0.6, 0.7, 0.8, 0.9), Mutazione (0.001, 0.005, 0.01, 0.015), Tournament (k=2, k=3, k=4), Roulette
+  \item \textbf{Dimensione della popolazione:} 100
+\end{itemize}
+L'esperimento è stato eseguito con la funzione \texttt{run\_experiment\_genetic\_operators} che permette di testare diverse combinazioni di operatori genetici, e i risultati sono stati raccolti e analizzati per valutare l'impatto degli operatori genetici sulla convergenza, stabilità, velocità di esecuzione e robustezza della selezione.
 \subsubsection{Risultati ottenuti}
-Di seguito i risultati ottenuti per le varie configurazioni di operatori genetici:
+Di seguito i risultati ottenuti per ogni dimensione della popolazione:
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{s2_convergence.png} 
@@ -279,9 +287,65 @@ Di seguito i risultati ottenuti per le varie configurazioni di operatori genetic
 \end{figure}
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
-    \includegraphics[width=0.8\textwidth]{s2_feature_freq.png} 
-    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici}
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_cr_06.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-crossover 0.6}
 \end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_cr_07.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-crossover 0.7}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_cr_08.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-crossover 0.8}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_cr_09.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-crossover 0.9}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_mr_001.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-mutazione 0.001}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_mr_005.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-mutazione 0.005}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_mr_01.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-mutazione 0.01}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_mr_015.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-mutazione 0.015}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_tournament_k_2.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-tournament k=2}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_tournament_k_3.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-tournament k=3}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_tournament_k_4.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-tournament k=4}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s2_feature_freq_roulette.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-roulette}
+\end{figure}
+
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{s2_fitness_boxplot.png} 
