@@ -280,11 +280,17 @@ Di seguito i risultati ottenuti per ogni dimensione della popolazione:
     \includegraphics[width=0.8\textwidth]{s2_convergence.png} 
     \caption{Convergenza per lo scenario operatori genetici}
 \end{figure}
+Le curve di convergenza mostrano differenze marcate tra le diverse configurazioni degli operatori genetici. 
+La configurazione con mutation rate \texttt{mr=0.01} si distingue nettamente da tutte le altre: a partire già dalle prime generazioni raggiunge valori di fitness sensibilmente più elevati, per poi continuare a crescere in modo sostenuto fino alla generazione 100, dove si attesta attorno a 0.74. Questa traiettoria suggerisce che una pressione mutativa ridotta favorisce l'accumulo di miglioramenti graduali senza distruggere le soluzioni parziali già buone.
+Al contrario, le configurazioni con mutation rate elevato (\texttt{mr=0.15}) presentano una convergenza prematura verso valori più bassi, indicando che un'eccessiva perturbazione casuale impedisce al GA di consolidare le soluzioni promettenti. Le configurazioni basate su crossover rate e selezione (tournament, roulette) si raggruppano in una fascia intermedia di fitness compresa tra 0.64 e 0.66, con differenze tra loro meno pronunciate.
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{s2_exec_time.png} 
     \caption{Tempo di esecuzione per lo scenario operatori genetici}
 \end{figure}
+Il grafico dei tempi di esecuzione rivela un pattern interessante: la maggior parte delle configurazioni si attesta su tempi mediani compresi tra 4 e 5 secondi, con varianza ridotta, suggerendo che il costo computazionale non dipende in modo significativo dal tipo di operatore di selezione o dal crossover rate.
+Un'eccezione rilevante riguarda la configurazione \texttt{cr=0.7}, che mostra una distribuzione molto più ampia con mediana attorno a 9 secondi e diversi outlier superiori a 13 secondi. Questo comportamento anomalo, non replicato dalle altre configurazioni, potrebbe indicare episodi di stagnazione che allungano il percorso esplorativo del GA prima della terminazione. La configurazione \texttt{mr=0.01}, nonostante sia quella che ottiene i risultati migliori in termini di fitness, 
+mantiene tempi tra i più contenuti (mediana circa 3.6 s), risultando la scelta più efficiente in termini di rapporto qualità/costo computazionale.
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{s2_feature_freq_cr_06.png} 
@@ -345,12 +351,18 @@ Di seguito i risultati ottenuti per ogni dimensione della popolazione:
     \includegraphics[width=0.8\textwidth]{s2_feature_freq_roulette.png} 
     \caption{Frequenza di selezione delle feature per lo scenario operatori genetici-roulette}
 \end{figure}
-
+Analizzando la frequenza di selezione delle feature al variare degli operatori genetici, emergono comportamenti distinti in funzione della configurazione adottata.
+Le configurazioni con crossover rate variabile (\texttt{cr=0.6}--\texttt{0.9}) mostrano distribuzioni di frequenza molto simili tra loro, con feature selezionate in modo relativamente uniforme tra le 30 run (valori compresi tra 22 e 26 su 30), indicando stabilità nella selezione indipendentemente dal valore di \textit{cr}. Tuttavia, il set di feature dominanti cambia sensibilmente da una configurazione all'altra, suggerendo che il crossover rate influenza \textit{quali} feature vengono privilegiate più che \textit{quanto frequentemente} vengono selezionate.
+La configurazione \texttt{mr=0.01} si distingue anche in questo senso: le frequenze di selezione sono le più alte tra tutte le configurazioni, con diverse feature selezionate in quasi tutte le 30 run (frequenza 29--30), a conferma di una soluzione più stabile e consensuale. Al contrario, la configurazione \texttt{mr=0.15} presenta le frequenze più basse e variabili, segnale di una selezione instabile coerente con la bassa fitness ottenuta. ù
+Le configurazioni basate su selezione tournament e roulette mostrano pattern analoghi alle configurazioni \textit{cr}, senza particolari dominanze di feature specifiche.
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{s2_fitness_boxplot.png} 
     \caption{Fitness boxplot per lo scenario operatori genetici}
 \end{figure}
+Il boxplot della fitness finale conferma e amplia quanto osservato nelle curve di convergenza. La configurazione \texttt{mr=0.01} presenta una distribuzione nettamente separata da tutte le altre, con mediana attorno a 0.738 e varianza contenuta, a conferma che il comportamento osservato non è frutto di singole run fortunate bensì di una strategia sistematicamente più efficace.
+La configurazione \texttt{mr=0.05} si posiziona come secondo miglior risultato con mediana di circa 0.671, mentre tutte le configurazioni basate su crossover rate (\texttt{cr=0.6}--\texttt{0.9}) mostrano distribuzioni molto simili e compatte attorno a 0.651, con scarsa variabilità inter-run. 
+La configurazione \texttt{mr=0.15} registra invece i valori più bassi, con mediana intorno a 0.641, confermando che una mutazione troppo aggressiva degrada sistematicamente la qualità delle soluzioni trovate.
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{best_s2.png} 
@@ -358,6 +370,16 @@ Di seguito i risultati ottenuti per ogni dimensione della popolazione:
 \end{figure}
 
 \subsection{Scenario criteri di stop}
+Lo scenario analizzato è il seguente:
+\begin{itemize}
+  \item \textbf{Numero di generazioni fisse:} [50, 100, 200]
+  \item \textbf{Convergenza(No Improvement):} 
+        \begin{itemize}
+            \item \textbf{Soglie:} [10, 20, 30] generazioni senza miglioramento
+            \item \textbf{Tolleranze:} [0.0001, 0.00001, 0.000001] miglioramento minimo per considerare un progresso significativo
+        \end{itemize}
+\end{itemize}
+L'esperimento è stato eseguito con la funzione \texttt{run\_experiment\_stop\_criteria} che permette di testare diverse configurazioni di criteri di stop, e i risultati sono stati raccolti e analizzati per valutare l'impatto dei criteri di stop sulla convergenza, stabilità, velocità di esecuzione e robustezza della selezione.
 \subsubsection{Risultati ottenuti}
 Di seguito i risultati ottenuti per le varie configurazioni di criteri di stop:
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
@@ -365,16 +387,88 @@ Di seguito i risultati ottenuti per le varie configurazioni di criteri di stop:
     \includegraphics[width=0.8\textwidth]{s3_convergence.png} 
     \caption{Convergenza per lo scenario criteri di stop}
 \end{figure}
+Le curve di convergenza dello Scenario 3 mostrano come il criterio di arresto influenzi in modo determinante la quantità di evoluzione che il GA riesce a compiere.
+Le configurazioni a numero massimo di generazioni fisso (\texttt{maxgen=50}, \texttt{maxgen=100}, \texttt{maxgen=200}) mostrano traiettorie chiaramente distinguibili: \texttt{maxgen=200} continua a migliorare fino alla generazione 200, raggiungendo la fitness più alta di tutto lo scenario (circa 0.655), mentre \texttt{maxgen=50} si arresta precocemente attorno a 0.648, lasciando spazio di miglioramento inesplorato.
+Le configurazioni basate su criterio di convergenza con finestra temporale ridotta (\texttt{conv\_t=10}) tendono a fermarsi molto presto, spesso già intorno alle generazioni 40--60, con fitness finale inferiore rispetto alle configurazioni a finestra più ampia. Al contrario, le configurazioni con \texttt{conv\_t=30} permettono al GA di proseguire più a lungo prima di dichiarare la convergenza, avvicinandosi al comportamento di \texttt{maxgen=100}. La tolleranza (\texttt{tol}) ha un effetto secondario rispetto alla finestra temporale: a parità di \textit{t}, variare la soglia da $10^{-4}$ a $10^{-6}$ produce differenze minime in termini di fitness finale e numero di generazioni completate.
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{s3_exec_time.png} 
     \caption{Tempo di esecuzione per lo scenario criteri di stop}
 \end{figure}
+Il grafico dei tempi di esecuzione riflette direttamente il numero di generazioni effettivamente eseguite da ciascuna configurazione.
+Le configurazioni a numero di generazioni fisso mostrano una scalabilità quasi lineare: \texttt{maxgen=50} impiega circa 2.7 secondi, \texttt{maxgen=100} circa 5 secondi, mentre \texttt{maxgen=200} richiede tra 10 e 16 secondi con una varianza molto elevata, indicando che la durata dipende in modo significativo dall'andamento stocastico della singola run.
+Le configurazioni con criterio di convergenza si attestano su tempi molto più contenuti e prevedibili. La finestra più stretta (\texttt{conv\_t=10}) produce i tempi più bassi dell'intero scenario (mediana circa 1.5 s), al prezzo però della qualità della soluzione. All'aumentare di \textit{t}, i tempi crescono gradualmente: \texttt{conv\_t=30} raggiunge mediane tra 5 e 7 secondi, comparabili a \texttt{maxgen=100} ma con fitness generalmente inferiori. Questo evidenzia che i criteri di convergenza non costituiscono necessariamente un vantaggio in termini di rapporto qualità/costo rispetto a un semplice limite sul numero di generazioni.
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_maxgen_50.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-numero di generazioni fisso 50}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_maxgen_100.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-numero di generazioni fisso 100}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_maxgen_200.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-numero di generazioni fisso 200}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_10_tol_1e-04.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 10-tolleranza 1e-04}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_10_tol_1e-05.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 10-tolleranza 1e-05}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_10_tol_1e-06.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 10-tolleranza 1e-06}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_20_tol_1e-04.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 20-tolleranza 1e-04}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_20_tol_1e-05.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 20-tolleranza 1e-05}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_20_tol_1e-06.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 20-tolleranza 1e-06}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_30_tol_1e-04.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 30-tolleranza 1e-04}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_30_tol_1e-05.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 30-tolleranza 1e-05}
+\end{figure}
+\begin{figure}[H] % h=here, t=top, b=bottom, p=page
+    \centering
+    \includegraphics[width=0.8\textwidth]{s3_feature_freq_conv_t_30_tol_1e-06.png} 
+    \caption{Frequenza di selezione delle feature per lo scenario criteri di stop-finestra di convergenza 30-tolleranza 1e-06}
+\end{figure}
+Analizzando la frequenza di selezione delle feature, si osserva che le configurazioni dello Scenario 3 producono distribuzioni generalmente più uniformi rispetto agli scenari precedenti, con frequenze comprese tra 22 e 28 su 30 run per la maggior parte delle feature visualizzate.
+Le configurazioni con \texttt{conv\_t=10} mostrano i pattern di selezione meno stabili, con set di feature dominanti che variano sensibilmente tra le diverse tolleranze, coerentemente con il fatto che l'arresto prematuro lascia il GA in stati evolutivi ancora poco consolidati. Le configurazioni \texttt{conv\_t=20} e \texttt{conv\_t=30} presentano invece distribuzioni più consistenti tra loro a parità di \textit{t}: in particolare, \texttt{conv\_t=30\_tol=1e-05} e \texttt{conv\_t=30\_tol=1e-06} mostrano praticamente identico ordinamento delle feature, confermando che la tolleranza ha un impatto trascurabile sul sottoinsieme selezionato.
+Le configurazioni \texttt{maxgen=100} e \texttt{maxgen=200} mostrano i set più stabili e ricorrenti tra le 30 run, con feature come \texttt{air\_time}, \texttt{total\_time} e \texttt{paper\_time} che compaiono con alta frequenza, suggerendo che un numero di generazioni sufficiente porta il GA a convergere verso un sottoinsieme informativo coerente e robusto.
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{s3_fitness_boxplot.png} 
     \caption{Fitness boxplot per lo scenario criteri di stop}
 \end{figure}
+Il boxplot della fitness finale conferma che il criterio di stop basato su numero massimo di generazioni produce risultati sistematicamente superiori rispetto ai criteri di convergenza anticipata.
+La configurazione \texttt{maxgen=200} presenta la distribuzione con mediana più elevata (circa 0.655) e una varianza moderata, indicando che un budget generazionale ampio è il fattore più determinante per la qualità della soluzione. \texttt{maxgen=100} si posiziona in modo intermedio, mentre \texttt{maxgen=50} mostra la distribuzione più bassa e più compatta tra le configurazioni \textit{maxgen}, a conferma che 50 generazioni sono insufficienti per esplorare adeguatamente lo spazio delle soluzioni.
+Le configurazioni con \texttt{conv\_t=10} producono le fitness più basse in assoluto (mediana attorno a 0.643), indipendentemente dalla tolleranza scelta, a causa dell'arresto prematuro. All'aumentare della finestra di convergenza (\texttt{conv\_t=20} e \texttt{conv\_t=30}), i risultati migliorano progressivamente e la varianza aumenta, con la comparsa di alcuni outlier positivi che suggeriscono che in certe run il GA riesce a sfruttare meglio il budget prima dell'arresto.
 \begin{figure}[H] % h=here, t=top, b=bottom, p=page
     \centering
     \includegraphics[width=0.8\textwidth]{best_s3.png} 
