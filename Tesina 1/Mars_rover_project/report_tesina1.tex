@@ -257,10 +257,11 @@ In questo paragrafo ci concentriamo sulle differenze sostanziali tra A* e BFS, e
 \toprule
 & \textbf{A*} & \textbf{BFS} \\
 \midrule
-Ottimale per costo pesato     & \checkmark & \texttimes \\
-Ottimale per numero di hop    & \texttimes & \checkmark \\
+Ottimalità  & \checkmark & \checkmark (con archi con costo unitario) \\
+Completezza   & \checkmark & \checkmark \\
+Percorso minimo (nodi espansi) & \texttimes & \checkmark \\
 Integra vincoli nella ricerca & \checkmark & \texttimes \\
-Complessità temporale         & $\mathcal{O}(E)$--$\mathcal{O}(V^2)$ & $\mathcal{O}(V+E)$ \\
+Complessità temporale         & $\mathcal{O}(V+E)$ & $\mathcal{O}(V+E)$ \\
 \bottomrule
 \end{tabular}
 \captionof{table}{Confronto sintetico tra i due algoritmi.}
