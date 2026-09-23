@@ -368,10 +368,9 @@ class ExperimentLogger:
 
 def _run_config(ga_kwargs: Dict, X, y, rcf_matrix, rfc_vector,
                 n_runs: int, config_label: str) -> Dict:
-    """Helper: esegue n_runs con una configurazione GA e restituisce statistiche."""
     logger = ExperimentLogger()
     for run in range(n_runs):
-        ga = GeneticAlgorithm(**ga_kwargs, random_seed=SEED + run)
+        ga = GeneticAlgorithm(**ga_kwargs, random_seed=SEED)
         result = ga.run(X, y, rcf_matrix, rfc_vector)
         logger.log_run(run, result, {'config': config_label})
         if (run + 1) % 5 == 0:
@@ -608,7 +607,7 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # -------------------------------------------------------------------------
-    # 1. Caricamento dati
+    # Caricamento dati
     # -------------------------------------------------------------------------
     X, y = load_darwin_dataset(r"C:\Users\And11\OneDrive\Desktop\UNIVERSITA\CASSINO\INTELLIGENZA ARTIFICIALE\Gruppo C\Gruppo C\Tesina 2\DARWIN.csv")    
     feature_names = list(X.columns)
@@ -617,7 +616,7 @@ if __name__ == "__main__":
     rcf_matrix, rfc_vector = precompute_correlations(X, y)
 
     # -------------------------------------------------------------------------
-    # 2. Scenario 1 – Dimensione della Popolazione
+    # Scenario 1 – Dimensione della Popolazione
     # -------------------------------------------------------------------------
     print("\n" + "=" * 60)
     print("  SCENARIO 1: Dimensione della Popolazione")
@@ -646,7 +645,7 @@ if __name__ == "__main__":
                        'exec_time_mean', 'n_selected_mean']].to_string(index=False))
 
     # -------------------------------------------------------------------------
-    # 3. Scenario 2 – Operatori Genetici
+    # Scenario 2 – Operatori Genetici
     # -------------------------------------------------------------------------
     print("\n" + "=" * 60)
     print("  SCENARIO 2: Operatori Genetici")
@@ -677,7 +676,7 @@ if __name__ == "__main__":
                        'exec_time_mean', 'n_selected_mean']].to_string(index=False))
 
     # -------------------------------------------------------------------------
-    # 4. Scenario 3 – Criteri di Stop
+    # Scenario 3 – Criteri di Stop
     # -------------------------------------------------------------------------
     print("\n" + "=" * 60)
     print("  SCENARIO 3: Criteri di Stop")
@@ -706,7 +705,7 @@ if __name__ == "__main__":
                        'exec_time_mean', 'gen_completed_mean']].to_string(index=False))
 
     # -------------------------------------------------------------------------
-    # 5. Riepilogo finale
+    # Riepilogo finale
     # -------------------------------------------------------------------------
     print("\n" + "=" * 60)
     print("  COMPLETATO")
