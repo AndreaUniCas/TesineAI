@@ -110,16 +110,14 @@ def fitness_correlation_based(individual: Individual,
 
     dove:
         k      = numero di feature selezionate
-        r_cf   = media delle |correlazioni feature-classe|
-        r_ff   = media delle |correlazioni inter-feature|
+        r_cf   = media delle |correlazioni feature-classe| VOGLIAMO ALTA
+        r_ff   = media delle |correlazioni inter-feature| VOGLIAMO BASSA 
 
     Parametri pre-calcolati (rcf_matrix, rfc_vector) per efficienza.
     """
     selected = individual.get_selected_indices()
     k = len(selected)
-    if k == 0:
-        return 0.0
-
+                                   
     # Feature-class correlation (media)
     r_cf = float(np.mean(rfc_vector[selected]))
 
@@ -148,11 +146,11 @@ def precompute_correlations(X: pd.DataFrame, y: pd.Series):
     # Feature-class
     rfc = np.array([abs(np.corrcoef(Xv[:, i], yv)[0, 1])
                     if not np.isnan(np.corrcoef(Xv[:, i], yv)[0, 1]) else 0.0
-                    for i in range(n)])
-
+                    for i in range(n)]) #precalcolo vettore correlazione feature-classe
+   
     # Feature-feature (matrice simmetrica delle correlazioni assolute)
-    rcf_matrix = X.corr().abs().values.copy()
-    np.fill_diagonal(rcf_matrix, 0.0)
+    rcf_matrix = X.corr().abs().values.copy() 
+    np.fill_diagonal(rcf_matrix, 0.0) 
 
     print(f"[Correlations] r_fc mean={rfc.mean():.4f}, max={rfc.max():.4f}")
     return rcf_matrix, rfc
