@@ -739,6 +739,7 @@ Lo Scenario 2 fissa l'architettura a $(400,200)$ con attivazione \texttt{tanh}
 necessario per far convergere SGD entro il limite di iterazioni.
 Valori troppo piccoli ($\leq 0.001$) con \texttt{invscaling} sono da
 evitare assolutamente.
+\end{itemize}
  
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Matrici di confusione (media 30 run)}
@@ -930,7 +931,7 @@ regolarizzazione:
         hanno impatto trascurabile sull'accuracy CV, confermando che
         la configurazione di base è già robusta.
  
-  \itemL'accuracy di questo scenario è la più alta e stabile dei tre. Il dataset
+  \item L'accuracy di questo scenario è la più alta e stabile dei tre. Il dataset
 DARWIN è ben appreso da \texttt{(400,200)\_tanh\_adam} indipendentemente
 dai dettagli di regolarizzazione, che incidono principalmente
 sull'overfitting (vedi Sez.~\ref{sec:s3_stab}).
