@@ -367,11 +367,11 @@ robusta e meno dipendente dalla singola suddivisione train/test.
 def run_config(X, y, mlp_params: dict, label: str,
                n_runs: int = N_RUNS) -> dict:
 \end{lstlisting}
-Funzione principale di orchestrazione: esegue \texttt{N\_RUNS} (30 volte come valore di default)
+Funzione principale di esecuzione delle configurazioni: esegue \texttt{N\_RUNS} (30 volte come valore di default)
 ripetizioni indipendenti (sia train/test split sia cross-validazione) per una
 singola configurazione di iper-parametri, aggregando i risultati in statistiche
 descrittive.
-Per ciascuna run $r \in \{0, \ldots, n\_runs - 1\}$: viene chiamato \texttt{single\_run} e \texttt{cv\_run}con seme \texttt{SEED + r}.
+Per ciascuna run $r \in \{0, \ldots, n\_runs - 1\}$: viene chiamato \texttt{single\_run} e \texttt{cv\_run}con seme \texttt{SEED}.
 Vengono aggregati i risultati calcolando media e deviazione standard di accuratezza, CV score, tempi di esecuzione.
 Quindi viene calcolata la \textbf{matrice di confusione media} sulle \texttt{n\_runs} run.
 Dopodiché la funzione identifica la run con l'AUC migliore e ne conserva la curva ROC.
