@@ -57,13 +57,7 @@ os.makedirs(OUT_DIR, exist_ok=True)
 # CARICAMENTO E PREPROCESSING
 # =============================================================================
 def load_darwin(filepath: str):
-    """
-    Carica DARWIN.csv.
-    - Scarta colonna ID (prima)
-    - Mappa classe P→1, H→0
-    - Imputa missing con mediana
-    Restituisce X (numpy), y (numpy), feature_names (list)
-    """
+  
     df = pd.read_csv(filepath)
     feature_names = df.columns[1:-1].tolist()
     X = df.iloc[:, 1:-1].copy()
@@ -78,7 +72,6 @@ def load_darwin(filepath: str):
 
 
 def make_pipeline(mlp_params: dict) -> Pipeline:
-    """Pipeline StandardScaler → MLPClassifier."""
     return Pipeline([
         ('scaler', StandardScaler()),
         ('mlp',    MLPClassifier(**mlp_params))
