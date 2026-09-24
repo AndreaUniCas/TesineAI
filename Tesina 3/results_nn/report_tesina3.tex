@@ -51,15 +51,6 @@
   captionpos=b
 }
 
-\tcbset{
-  commentbox/.style={
-    colback=blue!5,
-    colframe=blue!50!black,
-    fonttitle=\bfseries,
-    title=Commento
-  }
-}
-
 % ── Intestazione ───────────────────────────────────────────────────────────────
 \pagestyle{fancy}
 \fancyhf{}
@@ -401,7 +392,7 @@ Ogni 10 run viene stampato un log con il riepilogo finale.
 \end{tabular}
 \end{center}
 
-\textbf{Nota}: L'\textbf{overfitting index} è calcolato come
+L'\textbf{overfitting index} è calcolato come
 $\overline{\text{acc}_{train}} - \overline{\text{acc}_{test}}$;
 valori positivi indicano che il modello generalizza peggio di quanto
 apprenda sul training set.
@@ -461,7 +452,6 @@ per isolare l'effetto dei soli iperparametri di regolarizzazione.
   \caption{Scenario 1 -- Distribuzione dell'accuracy in cross-validazione 5-fold}
 \end{figure}
  
-\paragraph{Lettura del grafico.}
 Ogni box rappresenta la distribuzione dei punteggi di CV su 30 run per una
 configurazione. La linea nera interna è la mediana; i bordi del box
 delimitano il primo e il terzo quartile (IQR); i whisker coprono
@@ -483,15 +473,13 @@ $1.5 \times \text{IQR}$; i cerchietti sono outlier.
         maggiore varianza.
   \item La dispersione (altezza dei box) è generalmente contenuta
         ($\pm$2--3\%), segno di stabilità su tutti i seed.
-\end{itemize}
- 
-\begin{tcolorbox}[commentbox]
-La scelta dell'attivazione ha un effetto modesto sull'accuracy assoluta,
+
+  \item La scelta dell'attivazione ha un effetto modesto sull'accuracy assoluta,
 ma \texttt{tanh} e \texttt{relu} mostrano costantemente mediane più alte
 e dispersioni più ridotte rispetto a \texttt{logistic} e \texttt{identity},
-rendendole preferibili in pratica.
-\end{tcolorbox}
- 
+rendendole preferibili in pratica. 
+\end{itemize}
+
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Matrici di confusione (media 30 run)}
 \label{sec:s1_cm}
@@ -504,7 +492,6 @@ rendendole preferibili in pratica.
   \label{fig:s1_cm}
 \end{figure}
  
-\paragraph{Lettura del grafico.}
 Ogni cella riporta il numero medio di campioni (su 30 run) per quella
 combinazione reale/predetto. La cella in alto a sinistra è il numero di
 veri negativi (H$\to$H), in basso a destra i veri positivi (P$\to$P).
@@ -530,14 +517,13 @@ Il gradiente di colore (tonalità di blu) è proporzionale al valore.
   \item Il numero totale di campioni nel test set è $\approx 35$
         ($= 0.2 \times 175$ circa), coerente con la somma dei valori
         nelle matrici.
-\end{itemize}
  
-\begin{tcolorbox}[commentbox]
-In ambito clinico i falsi negativi (pazienti non riconosciuti come tali)
+  \item In ambito clinico i falsi negativi (pazienti non riconosciuti come tali)
 sono particolarmente costosi. Le architetture \texttt{relu} a più layer
 minimizzano questo tipo di errore, rendendole preferibili in questo
 contesto applicativo.
-\end{tcolorbox}
+\end{itemize}
+
  
 % ─────────────────────────────────────────────────────────────────────────────
 
@@ -552,7 +538,6 @@ contesto applicativo.
   \label{fig:s1_lc}
 \end{figure}
  
-\paragraph{Lettura del grafico.}
 La linea solida rappresenta la loss media su 30 run; la fascia colorata
 attorno è $\pm 1$ deviazione standard. L'asse $x$ conta le iterazioni
 (epoche) dell'ottimizzatore Adam; l'asse $y$ è la cross-entropy loss
@@ -595,7 +580,6 @@ sul training set.
   \label{fig:s1_roc}
 \end{figure}
  
-\paragraph{Lettura del grafico.}
 Ogni curva traccia il tasso di veri positivi (TPR) in funzione del tasso
 di falsi positivi (FPR) al variare della soglia di decisione. L'AUC
 (Area Under the Curve) è riportata in legenda; più è vicina a 1, migliore
@@ -620,12 +604,10 @@ di falsi positivi (FPR) al variare della soglia di decisione. L'AUC
         invece di curve continue.
 \end{itemize}
  
-\begin{tcolorbox}[commentbox]
 Con AUC $\geq 0.95$ per tutte le configurazioni, il modello dimostra
 elevata capacità discriminativa tra H e P. La scelta dell'architettura
 influenza principalmente la velocità di convergenza e non la qualità
 discriminativa finale.
-\end{tcolorbox}
  
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Tempi di esecuzione}
@@ -639,7 +621,6 @@ discriminativa finale.
   \label{fig:s1_time}
 \end{figure}
  
-\paragraph{Lettura del grafico.}
 Come per il box plot dell'accuracy, ogni box riassume la distribuzione
 dei 30 tempi di fit. L'asse $y$ è in secondi.
  
@@ -677,7 +658,6 @@ dei 30 tempi di fit. L'asse $y$ è in secondi.
   \label{fig:s1_stab}
 \end{figure}
  
-\paragraph{Lettura del grafico.}
 Il pannello superiore riporta la media $\pm$ std dell'accuracy CV su 30
 run. Il pannello inferiore mostra la differenza media tra accuracy sul
 training set e accuracy sul test set; la linea tratteggiata rossa a $0.05$
@@ -698,14 +678,11 @@ training set e accuracy sul test set; la linea tratteggiata rossa a $0.05$
         profondità$+$logistic bilanciano meglio bias e varianza.
   \item Il gap più elevato ($\approx 16\%$) si registra per configurazioni
         grandi con \texttt{identity}, coerente con la nota suscettibilità
-        all'overfitting delle reti lineari con molti parametri.
-\end{itemize}
- 
-\begin{tcolorbox}[commentbox]
-L'\texttt{alpha} di L2 fissato a $0.001$ non è sufficiente per contenere
+        all'overfitting delle reti lineari con molti parametri. 
+  \item L'\texttt{alpha} di L2 fissato a $0.001$ non è sufficiente per contenere
 l'overfitting nelle architetture più grandi. Lo Scenario 3 esplorerà
 l'effetto di valori più aggressivi di regolarizzazione.
-\end{tcolorbox}
+\end{itemize}
  
 \newpage
 % =============================================================================
@@ -757,14 +734,11 @@ Lo Scenario 2 fissa l'architettura a $(400,200)$ con attivazione \texttt{tanh}
         alta varianza, poiché è un metodo quasi-Newton ottimizzato per
         dataset piccoli e soffre di scaling su dataset di dimensione
         moderata con early stopping disabilitato.
-\end{itemize}
  
-\begin{tcolorbox}[commentbox]
-Learning rate nell'intervallo $[0.01, 0.1]$ con qualsiasi policy è
+  \item Learning rate nell'intervallo $[0.01, 0.1]$ con qualsiasi policy è
 necessario per far convergere SGD entro il limite di iterazioni.
 Valori troppo piccoli ($\leq 0.001$) con \texttt{invscaling} sono da
 evitare assolutamente.
-\end{tcolorbox}
  
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Matrici di confusione (media 30 run)}
@@ -955,14 +929,12 @@ regolarizzazione:
   \item Le variazioni di \texttt{val\_split} e \texttt{n\_iter\_no\_change}
         hanno impatto trascurabile sull'accuracy CV, confermando che
         la configurazione di base è già robusta.
-\end{itemize}
  
-\begin{tcolorbox}[commentbox]
-L'accuracy di questo scenario è la più alta e stabile dei tre. Il dataset
+  \itemL'accuracy di questo scenario è la più alta e stabile dei tre. Il dataset
 DARWIN è ben appreso da \texttt{(400,200)\_tanh\_adam} indipendentemente
 dai dettagli di regolarizzazione, che incidono principalmente
 sull'overfitting (vedi Sez.~\ref{sec:s3_stab}).
-\end{tcolorbox}
+\end{itemize}
  
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Matrici di confusione (media 30 run)}
@@ -1101,15 +1073,13 @@ sull'overfitting (vedi Sez.~\ref{sec:s3_stab}).
   \item \textbf{n\_iter\_no\_change=5} mostra il gap più basso tra le
         varianti di early stopping ($\approx 11\%$): terminare prima il
         training riduce la memorizzazione.
-\end{itemize}
- 
-\begin{tcolorbox}[commentbox]
-Nello Scenario 3 il fattore che impatta maggiormente l'overfitting è la
+  \item Nello Scenario 3 il fattore che impatta maggiormente l'overfitting è la
 presenza/assenza dell'early stopping, non il valore di \texttt{alpha} o
 di \texttt{val\_split}. Abilitare l'early stopping con
 \texttt{n\_iter\_no\_change} $\leq 10$ è la strategia di regolarizzazione
 più efficace per questo problema.
-\end{tcolorbox}
+\end{itemize}
+
  
 \section{Conclusioni}
 % =============================================================================
