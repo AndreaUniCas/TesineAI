@@ -135,9 +135,9 @@ def run_config(X, y, mlp_params: dict, label: str, n_runs: int = N_RUNS) -> dict
     cv_scores = []
 
     for r in range(n_runs):
-        res = single_run(X, y, mlp_params, run_seed=SEED + r)
+        res = single_run(X, y, mlp_params, run_seed=SEED)
         results.append(res)
-        cv_scores.append(cv_run(X, y, mlp_params, run_seed=SEED + r))
+        cv_scores.append(cv_run(X, y, mlp_params, run_seed=SEED))
         if (r + 1) % 10 == 0:
             acc_mean = np.mean([x['accuracy'] for x in results])
             print(f"    [{label}] run {r+1}/{n_runs} | acc_mean={acc_mean:.4f}")
